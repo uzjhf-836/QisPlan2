@@ -8,9 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
 /**
@@ -19,8 +16,10 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
  * NeoForge 1.21.1 的 HUD 采用分层渲染系统，
  * 必须通过 {@link RegisterGuiLayersEvent} 在 mod 事件总线上注册一个 {@link net.minecraft.client.gui.LayeredDraw.Layer}，
  * 不能再使用已不触发的 RenderGuiEvent / RenderGuiLayerEvent。
+ * <p>
+ * 注意：不在类上使用 {@code @EventBusSubscriber(bus = Bus.MOD)}（bus() 已过时标记待删除），
+ * 改由 {@code QisPlan2Client} 通过 {@code modContainer.getEventBus().addListener(...)} 显式注册。
  */
-@EventBusSubscriber(modid = QisPlan2.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DeathCurseHudOverlay {
 
     private static final int MAX_CURSE = 10;
@@ -34,9 +33,9 @@ public class DeathCurseHudOverlay {
     private static int lastLoggedCurse = -1;
 
     /**
-     * 注册 HUD 图层，渲染在所有图层之上
+     * 注册 HUD 图层，渲染在所有图层之上。
+     * 由 QisPlan2Client 在 mod 事件总线上显式注册。
      */
-    @SubscribeEvent
     public static void registerDeathCurseLayer(RegisterGuiLayersEvent event) {
         event.registerAboveAll(
                 ResourceLocation.fromNamespaceAndPath(QisPlan2.MODID, "death_curse_bar"),

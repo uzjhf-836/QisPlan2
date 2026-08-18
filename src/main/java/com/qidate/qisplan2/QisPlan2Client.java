@@ -1,5 +1,6 @@
 package com.qidate.qisplan2;
 
+import com.qidate.qisplan2.event.DeathCurseHudOverlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModContainer;
@@ -16,5 +17,9 @@ public class QisPlan2Client {
             // 直接使用NeoForge提供的通用配置界面
             return new ConfigurationScreen(modContainer, parent);
         });
+
+        // 显式在 mod 事件总线上注册必死诅咒骷髅条的 HUD 图层
+        // （不使用已过时的 @EventBusSubscriber(bus = Bus.MOD)）
+        modContainer.getEventBus().addListener(DeathCurseHudOverlay::registerDeathCurseLayer);
     }
 }
